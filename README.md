@@ -1,6 +1,6 @@
-# unnamed_project
+# front_prototype
 
-PracticeProject
+Prototype
 
 ## Getting Started
 
