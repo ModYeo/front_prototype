@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:unnamed_project/home/alarm/alarm.dart';
+import 'package:unnamed_project/home/board.dart';
 import 'package:unnamed_project/models/post.dart';
 
 class HomeBoardView extends StatefulWidget {
@@ -45,7 +47,7 @@ class _HomeBoardViewState extends State<HomeBoardView> {
             children: [
               Text('TimeLine'),
               Spacer(),
-              IconButton(onPressed: (){}, icon: Icon(Icons.notifications))
+              IconButton(onPressed: (){ Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => AlarmView())); }, icon: Icon(Icons.notifications))
             ],
           ),
         ),
@@ -113,7 +115,7 @@ class BoardListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){ print('tap'); },
+      onTap: (){ Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => BoardView())); },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
         child: Container(

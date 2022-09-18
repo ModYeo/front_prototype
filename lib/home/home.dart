@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:unnamed_project/home/crew/crew_community.dart';
 import 'package:unnamed_project/home/crew/crew_home.dart';
 import 'package:unnamed_project/home/home_board.dart';
+import 'package:unnamed_project/home/mypage/mypage.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -35,29 +36,32 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        body: Stack(
-          children: [
-            getOffStageView(CrewHome(navigator: _navigators[0],), 0),
-            getOffStageView(Text('second'), 1),
-            getOffStageView(HomeBoardView(), 2),
-            getOffStageView(Text('fourth'),3),
-            getOffStageView(Text('fifth'),4),
-          ],
+    return WillPopScope(
+      onWillPop: () async {return false;},
+      child: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Scaffold(
+          body: Stack(
+            children: [
+              getOffStageView(CrewHome(navigator: _navigators[0],), 0),
+              getOffStageView(Text('second'), 1),
+              getOffStageView(HomeBoardView(), 2),
+              getOffStageView(Text('fourth'),3),
+              getOffStageView(MyPageView(),4),
+            ],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: _currentTab,
+            onTap: onTabChange,
+            items: [
+              BottomNavigationBarItem(icon: Icon(Icons.group), label: 'group',),
+              BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'chat'),
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
+              BottomNavigationBarItem(icon: Icon(Icons.people), label: 'people'),
+              BottomNavigationBarItem(icon: Icon(Icons.person), label: 'mypage'),
+            ],
+          )
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentTab,
-          onTap: onTabChange,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.group), label: 'group',),
-            BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'chat'),
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
-            BottomNavigationBarItem(icon: Icon(Icons.people), label: 'people'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'mypage'),
-          ],
-        )
       ),
     );
   }
