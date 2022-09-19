@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unnamed_project/home/crew/crew_list.dart';
-import 'package:unnamed_project/home/crew/crew_page.dart';
+import 'package:unnamed_project/home/crew/crew_apply_page.dart';
 import 'package:unnamed_project/models/crew.dart';
 
 class CrewHome extends StatelessWidget {
@@ -196,7 +196,7 @@ class CrewListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){ Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => CrewPageView())); },
+      onTap: (){ Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => CrewApplyPageView())); },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
         child: Container(

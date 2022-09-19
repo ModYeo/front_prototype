@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:unnamed_project/home/crew/crew_home.dart';
+import 'package:unnamed_project/home/crew/crew_main_page.dart';
 
-class CrewPageView extends StatelessWidget {
-  const CrewPageView({Key? key}) : super(key: key);
+class CrewApplyPageView extends StatelessWidget {
+  const CrewApplyPageView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -10,9 +12,10 @@ class CrewPageView extends StatelessWidget {
         title: Text('Crew Name'),
         actions: [
           PopupMenuButton(
+            onSelected: (index){ Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => CrewMainPageView())); },
             itemBuilder: (context){
               return [
-                PopupMenuItem(child: Text('first'))
+                PopupMenuItem(value : 0, child: Text('first'))
               ];
             },
           ),

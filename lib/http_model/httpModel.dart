@@ -75,6 +75,12 @@ class httpModel{
     HttpHeaders.authorizationHeader : 'Bearer $authToken'
   };
 
+  getEncryptHeader(String encrpyt) =>{
+    HttpHeaders.contentTypeHeader : 'application/json',
+    HttpHeaders.acceptHeader : 'application/json',
+    HttpHeaders.authorizationHeader : 'Basic $encrpyt'
+  };
+
   httpModel._internal(){
     //init
   }
@@ -121,12 +127,9 @@ class httpModel{
 
   Future<bool> login(String id, String pw) async {
 
-    var encoded = "Basic ${base64Encode(utf8.encode('$id:$pw'))}";
-    print(encoded);
     var response = await http.post(
       Uri.parse('$address/api/auth/login'),
-      headers: defaultHeader,
-      body: encoded
+      headers: getEncryptHeader(base64Encode(utf8.encode('$id:$pw'))),
     );
     if(response.statusCode == StatusCode.OK.code){
       print(response.body);

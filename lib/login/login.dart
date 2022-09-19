@@ -171,7 +171,7 @@ class LoginViewModel{
 
   Future<bool> ManualLogin() async {
     print('login tried');
-    return await true;//httpModel().testLogin();
+    return await httpModel().testLogin();
   }
 
   void AutoLogin(){
