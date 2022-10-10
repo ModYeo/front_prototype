@@ -4,9 +4,7 @@ import 'package:unnamed_project/login/login.dart';
 import 'package:unnamed_project/secure_storage/storageModel.dart';
 
 class IntroPage extends StatefulWidget {
-  final GlobalKey<NavigatorState> rootNavigator;
-
-  const IntroPage({Key? key, required this.rootNavigator}) : super(key: key);
+  const IntroPage({Key? key}) : super(key: key);
 
   @override
   State<IntroPage> createState() => _IntroPageState();
@@ -42,7 +40,7 @@ class _IntroPageState extends State<IntroPage> {
         future: _delayOpening(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
-            return LoginPage(rootNavigator: widget.rootNavigator);
+            return Login();
           } else if(snapshot.hasError){
             print('error');
           }

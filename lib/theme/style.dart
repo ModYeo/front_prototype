@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
+const radValue = 25;
 const rad = Radius.circular(25);
-var defaultBorderRadius = const BorderRadius.only(
+const defaultBorderRadius = BorderRadius.only(
     topLeft: rad,
     topRight: rad,
-    bottomRight: rad
+    bottomRight: rad,
+    bottomLeft: rad
 );
 
-var mainColorScheme = ColorScheme(
+const mainColorScheme = ColorScheme(
     brightness: Brightness.light,
     primary: Color(0xffdae4d3),
     onPrimary: Color(0xff707070),
@@ -59,4 +61,8 @@ var mainTheme = ThemeData(
     showSelectedLabels: false,
     selectedItemColor: Colors.green,
   )
+);
+
+const defaultBox = BoxDecoration(
+  borderRadius: defaultBorderRadius,
 );

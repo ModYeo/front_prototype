@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:unnamed_project/home/crew/crew_list.dart';
 import 'package:unnamed_project/home/crew/crew_apply_page.dart';
 import 'package:unnamed_project/models/crew.dart';

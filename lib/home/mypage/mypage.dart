@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unnamed_project/home/mypage/profile_edit_page.dart';
 
 class MyPageView extends StatelessWidget {
   const MyPageView({Key? key}) : super(key: key);
@@ -17,7 +18,9 @@ class MyPageView extends StatelessWidget {
                 fallbackHeight: 50,
                 fallbackWidth: 50,
               ),
-              Text('Username')
+              Text('Username'),
+              Spacer(),
+              IconButton(onPressed: (){ Navigator.of(context).push( MaterialPageRoute(builder: (context) => ProfileEditPageView())); }, icon: Icon(Icons.navigate_next))
             ],
           ),
         ),
@@ -25,16 +28,16 @@ class MyPageView extends StatelessWidget {
           margin: EdgeInsets.all(10),
           child: Text('My Activity'),
         ),
-        TextButton.icon(
-          onPressed: ( ){},
-          icon: Icon(Icons.thumb_up),
-          label: Row(
-            children: [
-              Text('likes'),
-              Spacer()
-            ],
+        Material(
+          child: ListTile(
+            tileColor: Colors.green,
+            leading: Icon(Icons.exit_to_app),
+            title: Text('Logout'),
+            onTap: (){
+              Navigator.of(context, rootNavigator: true).pushReplacementNamed('/login');
+            },
           ),
-        ),
+        )
       ],
     );
   }

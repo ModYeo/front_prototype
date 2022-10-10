@@ -25,6 +25,9 @@ class _CrewMainPageViewState extends State<CrewMainPageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawer: Drawer(
+
+      ),
       appBar: AppBar(
         title: Text('CrewName'),
       ),
@@ -90,6 +93,10 @@ class _CrewMainPageViewState extends State<CrewMainPageView> {
 }
 
 class CrewMainPageViewModel{
+
+  String getNotice(){
+    return '';
+  }
 
   List<PostData> getPosts(){
     return List.generate(20, (index) => PostData(PostInfo(index, 0), 'title', 'content', 0, 0, 0));

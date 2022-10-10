@@ -122,11 +122,11 @@ class httpModel{
   }
 
   Future<bool> testLogin() async{
+    print('test');
     return login("test@gmail.com", "test123");
   }
 
   Future<bool> login(String id, String pw) async {
-
     var response = await http.post(
       Uri.parse('$address/api/auth/login'),
       headers: getEncryptHeader(base64Encode(utf8.encode('$id:$pw'))),

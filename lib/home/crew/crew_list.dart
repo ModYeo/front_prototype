@@ -1,26 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:unnamed_project/home/crew/crew_home.dart';
 import 'package:unnamed_project/models/crew.dart';
+import 'package:unnamed_project/view_model.dart';
 
-class CrewListView extends StatefulWidget {
-  const CrewListView({Key? key}) : super(key: key);
-
-  @override
-  State<CrewListView> createState() => _CrewListViewState();
-}
-
-class _CrewListViewState extends State<CrewListView> {
-
-  late List<Crew> _myManagingCrews;
-  late List<Crew> _myJoinedCrews;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _myManagingCrews = CrewListViewModel().getManagingCrews();
-    _myJoinedCrews = CrewListViewModel().getJoinedCrews();
-  }
+class CrewListView extends StatelessWidget {
+  CrewListView({Key? key}) : super(key: key);
+  late CrewListViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -29,30 +14,30 @@ class _CrewListViewState extends State<CrewListView> {
         SliverAppBar(),
         SliverToBoxAdapter(
           child: Column(
-            children:[
-              Text("Create your own crew!\nInvide your friends!\nRecruit 5 people"),
-              ElevatedButton(onPressed: (){}, child: Text('create crew'))
-            ]
+              children:[
+                Text("Create your own crew!\nInvide your friends!\nRecruit 5 people"),
+                ElevatedButton(onPressed: (){}, child: Text('create crew'))
+              ]
           ),
         ),
         SliverToBoxAdapter(
           child: Text('Managing Crews'),
         ),
         SliverList(
-          delegate: SliverChildBuilderDelegate((context, index){
-            return CrewListTile(data : _myManagingCrews[index]);
+            delegate: SliverChildBuilderDelegate((context, index){
+              return CrewListTile(data : viewModel.myManagingCrews[index]);
             },
-            childCount: _myManagingCrews.length
-          )
+                childCount: viewModel.myManagingCrews.length
+            )
         ),
         SliverToBoxAdapter(
           child: Text('Joined Crews'),
         ),
         SliverList(
             delegate: SliverChildBuilderDelegate((context, index){
-              return CrewListTile(data : _myJoinedCrews[index]);
+              return CrewListTile(data : viewModel.myJoinedCrews[index]);
             },
-                childCount: _myJoinedCrews.length
+                childCount: viewModel.myJoinedCrews.length
             )
         )
       ],
@@ -60,12 +45,29 @@ class _CrewListViewState extends State<CrewListView> {
   }
 }
 
-class CrewListViewModel{
-  List<Crew> getManagingCrews(){
-    return List.generate(2, (index) => Crew('my managing crew $index', 'path'));
+class CrewListViewModel extends ViewModel{
+
+  late List<Crew> myManagingCrews;
+  late List<Crew> myJoinedCrews;
+
+  CrewListViewModel(super.context){
+    getManagingCrews();
+    getJoinedCrews();
   }
 
-  List<Crew> getJoinedCrews(){
-    return List.generate(5, (index) => Crew('my joined crew $index', 'path'));
+  Future<void> getManagingCrews() async {
+    await Future.delayed(Duration(seconds: 2));
+    myManagingCrews = List.generate(2, (index) => Crew('my managing crew $index', 'path'));
+  }
+
+  Future<void> getJoinedCrews() async {
+    await Future.delayed(Duration(seconds: 2));
+    myJoinedCrews =  List.generate(5, (index) => Crew('my joined crew $index', 'path'));
+  }
+
+  @override
+  dispose() {
+    // TODO: implement dispose
+    throw UnimplementedError();
   }
 }

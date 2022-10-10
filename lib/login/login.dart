@@ -1,73 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:unnamed_project/login/authenticate.dart';
+import 'package:provider/provider.dart';
+import 'package:unnamed_project/route_navigator/route_navigator.dart';
+import 'package:unnamed_project/view_model.dart';
 
 import '../http_model/httpModel.dart';
-import 'signup.dart';
 
-class LoginPage extends StatelessWidget {
-  final GlobalKey<NavigatorState> rootNavigator;
-
-  const LoginPage({Key? key, required this.rootNavigator}) : super(key: key);
+class Login extends StatelessWidget {
+  const Login({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {return false;},
+      onWillPop: RouteNavigator().LoginPathReturnRoute,
       child: Navigator(
-          initialRoute: '/login',
-          onGenerateRoute: (RouteSettings settings){
-            WidgetBuilder builder;
-
-            switch(settings.name){
-              case '/login': builder = (context) => LoginPageView(moveToHome: (){ rootNavigator.currentState?.pushReplacementNamed('/home');},); break;//FirstPage(); break;
-              case '/authenticate' : builder = (context) => AuthenticatePageView(); break;
-              case '/signup': builder = (context) => SignupPageView(); break;
-              default :builder = (context) => Text('error'); break;
-            }
-            return MaterialPageRoute(builder: builder);
-          }
+        onPopPage: (route, _) { print('pushed'); return false; },
+        key: RouteNavigator().login.navKey,
+        initialRoute: LoginRoute.Login.path,
+        onGenerateRoute: RouteNavigator().LoginPathRoute
       ),
     );
   }
 }
 
-class LoginPageView extends StatefulWidget {
-  const LoginPageView({Key? key, required this.moveToHome}) : super(key: key);
+class LoginPageView extends StatelessWidget {
+  LoginPageView({Key? key}) : super(key: key);
 
-  final VoidCallback moveToHome;
-
-  @override
-  State<LoginPageView> createState() => _LoginPageViewState();
-}
-
-class _LoginPageViewState extends State<LoginPageView> {
-
-  late TextEditingController _idTextController;
-  late TextEditingController _pwTextController;
-
-  bool _enableIDSave = false;
-  bool _enableAutoLogin = false;
-
-  @override
-  void initState(){
-    super.initState();
-    _idTextController = TextEditingController();
-    _pwTextController = TextEditingController();
-  }
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _idTextController.dispose();
-    _pwTextController.dispose();
-    super.dispose();
-  }
+  late LoginPageViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
+    viewModel = Provider.of<LoginPageViewModel>(context);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-        body: Container(
+        body: SizedBox(
           width: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +58,7 @@ class _LoginPageViewState extends State<LoginPageView> {
                       children: [
                         Text('Email'),
                         TextField(
-                          controller: _idTextController,
+                          controller: viewModel.idTextController,
                           onSubmitted: (text){},
                           textInputAction: TextInputAction.next,
                         ),
@@ -103,7 +69,8 @@ class _LoginPageViewState extends State<LoginPageView> {
                       children: [
                         Text('Password'),
                         TextField(
-                          controller: _pwTextController,
+                          obscureText: true,
+                          controller: viewModel.pwTextController,
                           onSubmitted: (text){},
                           textInputAction: TextInputAction.next,
                         ),
@@ -115,19 +82,8 @@ class _LoginPageViewState extends State<LoginPageView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Checkbox(value: _enableIDSave, onChanged: (value){setState((){_enableIDSave = value!;});}),
+                          Checkbox(value: viewModel.enableIDSave, onChanged: (value){ viewModel.toggleIDSave(); }),
                           Text('Save ID')
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                      width: 200,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Checkbox(value: _enableAutoLogin, onChanged: (value){setState((){_enableAutoLogin = value!;});}),
-                          Text('Auto Login')
                         ],
                       ),
                     ),
@@ -135,10 +91,8 @@ class _LoginPageViewState extends State<LoginPageView> {
                       width: 200,
                       child: ElevatedButton(
                         onPressed: () async {
-                          var login = await LoginViewModel().ManualLogin();
-                          print(login);
-                          if(login){
-                            widget.moveToHome();
+                          if(await viewModel.ManualLogin()){
+                            viewModel.navigateToHome();
                           }
                         },
                         child: const Text('Login'),
@@ -147,12 +101,10 @@ class _LoginPageViewState extends State<LoginPageView> {
                     SizedBox(
                       width: 200,
                       child: ElevatedButton(
-                        onPressed: (){ Navigator.pushNamed(context, '/authenticate'); },
-                        child: const Text('SignUp')
+                          onPressed: viewModel.navigateToSignup,
+                          child: const Text('SignUp')
                       ),
                     ),
-                    //ElevatedButton(onPressed: (){ print('pressed'); httpModel().testCreateArticle(); }, child: const Text('TestArticle')),
-                    //ElevatedButton(onPressed: (){ print('logout'); httpModel().testLogout(); }, child: const Text('TestLogout')),
                   ].map((element){
                     return Container(margin: const EdgeInsets.only(bottom: 10) ,child: element,);
                   }).toList(),
@@ -166,15 +118,70 @@ class _LoginPageViewState extends State<LoginPageView> {
   }
 }
 
+class LoginPageViewModel extends ViewModel{
+  late TextEditingController idTextController;
+  late TextEditingController pwTextController;
 
-class LoginViewModel{
+  bool enableIDSave = false;
+
+  List<int>? testList;
+
+  LoginPageViewModel(context) : super(context){
+    idTextController = TextEditingController();
+    pwTextController = TextEditingController();
+    getList();
+  }
+
+  void navigateToHome() => RouteNavigator().root.pushReplacementNamed(RootRoute.Home.path);
+  void navigateToSignup() => RouteNavigator().login.pushNamed(LoginRoute.Authenticate.path);
+
+  void toggleIDSave(){
+    enableIDSave = !enableIDSave;
+    notifyListeners();
+  }
 
   Future<bool> ManualLogin() async {
     print('login tried');
     return await httpModel().testLogin();
   }
 
-  void AutoLogin(){
+  Future<void> getList() async{
+    await Future.delayed(Duration(seconds: 2));
+    testList = List.generate(5, (index) => index);
+    notifyListeners();
+    print('something');
+  }
 
+  String listLength(){
+    if(testList == null)
+      return '0';
+    else
+      return testList!.length.toString();
+  }
+
+  void showAlertDialog(){
+    showDialog(context: context, builder: (context) => LoginPageViewDialog());
+  }
+}
+
+class LoginPageViewDialog extends StatelessWidget {
+  const LoginPageViewDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('AlertDialog Title'),
+      content: const Text('AlertDialog description'),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: const Text('OK'),
+        ),
+      ],
+    );
   }
 }
