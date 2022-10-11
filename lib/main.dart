@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unnamed_project/http_model/httpModel.dart';
+import 'package:unnamed_project/route_navigator/root_route_navigator.dart';
 import 'package:unnamed_project/route_navigator/route_navigator.dart';
 import 'package:unnamed_project/theme/style.dart';
 import 'models/user.dart';
@@ -12,9 +13,9 @@ void main() {
     ],
     child: MaterialApp(
       theme: mainTheme,
-      initialRoute: LoginRoute.Login.path,
+      initialRoute: RootRoute.Login.path,
       navigatorKey: RouteNavigator().root.navKey,
-      onGenerateRoute: RouteNavigator().RootPathRoute
+      onGenerateRoute: RouteNavigator().root.PathRoute
     ),
   ));
 }

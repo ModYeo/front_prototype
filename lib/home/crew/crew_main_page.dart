@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:unnamed_project/home/home_board.dart';
+import 'package:unnamed_project/home/home_view.dart';
 import 'package:unnamed_project/models/post.dart';
 
 class CrewMainPageView extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unnamed_project/home/crew/crew_home.dart';
-import 'package:unnamed_project/home/home_board.dart';
+import 'package:unnamed_project/home/home_view.dart';
 import 'package:unnamed_project/home/mypage/mypage.dart';
 
 class Home extends StatefulWidget {
@@ -12,13 +12,10 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  late List<GlobalKey<NavigatorState>> _navigators;
-
   var _currentTab = 2;
 
   @override
   void initState() {
-    _navigators = List.generate(5, (index) => GlobalKey<NavigatorState>());
     // TODO: implement initState
     super.initState();
   }
@@ -42,9 +39,9 @@ class _HomeState extends State<Home> {
         child: Scaffold(
           body: Stack(
             children: [
-              getOffStageView(CrewHome(navigator: _navigators[0],), 0),
+              getOffStageView(CrewHome(), 0),
               getOffStageView(Text('second'), 1),
-              getOffStageView(HomeBoardView(), 2),
+              getOffStageView(HomePageView(), 2),
               getOffStageView(Text('fourth'),3),
               getOffStageView(MyPageView(),4),
             ],
@@ -72,5 +69,4 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
 

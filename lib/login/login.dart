@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:unnamed_project/route_navigator/login_route_navigator.dart';
+import 'package:unnamed_project/route_navigator/root_route_navigator.dart';
 import 'package:unnamed_project/route_navigator/route_navigator.dart';
 import 'package:unnamed_project/view_model.dart';
 
@@ -11,12 +13,12 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: RouteNavigator().LoginPathReturnRoute,
+      onWillPop: RouteNavigator().login.ReturnRoute,
       child: Navigator(
         onPopPage: (route, _) { print('pushed'); return false; },
         key: RouteNavigator().login.navKey,
         initialRoute: LoginRoute.Login.path,
-        onGenerateRoute: RouteNavigator().LoginPathRoute
+        onGenerateRoute: RouteNavigator().login.PathRoute
       ),
     );
   }
@@ -142,7 +144,7 @@ class LoginPageViewModel extends ViewModel{
 
   Future<bool> ManualLogin() async {
     print('login tried');
-    return await httpModel().testLogin();
+    return true;//await httpModel().testLogin();
   }
 
   Future<void> getList() async{

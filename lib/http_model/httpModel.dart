@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:unnamed_project/models/user.dart';
 
 enum StatusCode{
+  TIMEOUT     (code: 110),
   OK          (code: 200),
   CREATED     (code: 201),
   NO_CONTENT  (code: 204),

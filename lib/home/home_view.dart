@@ -1,40 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:unnamed_project/home/alarm/alarm.dart';
 import 'package:unnamed_project/home/board.dart';
 import 'package:unnamed_project/models/post.dart';
 
-class HomeBoardView extends StatefulWidget {
-  const HomeBoardView({Key? key}) : super(key: key);
+import '../view_model.dart';
 
-  @override
-  State<HomeBoardView> createState() => _HomeBoardViewState();
-}
-
-class _HomeBoardViewState extends State<HomeBoardView> {
-  late TextEditingController _searchTextController;
-
-  var _dropdownList = ['one', 'two', 'three'];
-  var _dropdownValue;
-
-  late List<PostData> _postList;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _postList = HomeBoardViewModel().getPosts();
-    _searchTextController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _searchTextController.dispose();
-    // TODO: implement dispose
-    super.dispose();
-  }
+class HomePageView extends StatelessWidget {
+  HomePageView({Key? key}) : super(key: key);
+  late HomePageViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
+    viewModel = Provider.of<HomePageViewModel>(context);
     return CustomScrollView(
       slivers: [
         SliverAppBar(
@@ -65,7 +43,7 @@ class _HomeBoardViewState extends State<HomeBoardView> {
                     children: [
                       Flexible(
                         child: TextField(
-                          controller: _searchTextController,
+                          controller: viewModel.searchTextController,
                         ),
                       ),
                       IconButton(onPressed: (){}, icon: Icon(Icons.search))
@@ -80,12 +58,12 @@ class _HomeBoardViewState extends State<HomeBoardView> {
                       Spacer(),
                       DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
-                          value: _dropdownValue,
-                          hint: Text(_dropdownValue??'none'),
+                          value: viewModel.dropdownValue,
+                          hint: Text(viewModel.dropdownValue),
                           underline: null,
-                          onChanged: (value){ setState((){_dropdownValue = value;});},
+                          onChanged: (value){ viewModel.dropdownValue = value; },
                           borderRadius: BorderRadius.all(Radius.circular(20)),
-                          items: _dropdownList.map<DropdownMenuItem<String>>((value) => DropdownMenuItem(value : value, child: Text(value))).toList(),
+                          items: viewModel.dropdownList.map<DropdownMenuItem<String>>((value) => DropdownMenuItem(value : value, child: Text(value))).toList(),
                         ),
                       ),
                     ],
@@ -95,9 +73,13 @@ class _HomeBoardViewState extends State<HomeBoardView> {
             ),
           ),
         ),
+        viewModel.postList.isEmpty ?
+        CircularProgressIndicator(
+
+        ) :
         SliverList(
             delegate: SliverChildBuilderDelegate((context, index){
-              return BoardListTile(data : _postList[index]);
+              return BoardListTile(data : viewModel.postList[index]);
             },
               childCount: 20,
             )
@@ -152,9 +134,23 @@ class BoardListTile extends StatelessWidget {
   }
 }
 
-class HomeBoardViewModel{
+class HomePageViewModel extends ViewModel{
+  HomePageViewModel(super.context);
 
-  List<PostData> getPosts(){
+  late TextEditingController searchTextController;
+
+  final List _dropdownList = ['one', 'two', 'three'];
+  late String _dropdownValue;
+
+  late List<PostData> _postList;
+
+  List get dropdownList => _dropdownList;
+  String get dropdownValue => _dropdownValue;
+  set dropdownValue(value){ _dropdownValue = value; }
+
+  List<PostData> get postList => _postList;
+
+  Future<List<PostData>> getPosts() async {
     return List.generate(20, (index) => PostData(PostInfo(index, 0), 'title', 'content', 0, 0, 0));
   }
 

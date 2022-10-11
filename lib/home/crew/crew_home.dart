@@ -5,27 +5,22 @@ import 'package:unnamed_project/home/crew/crew_apply_page.dart';
 import 'package:unnamed_project/models/crew.dart';
 
 class CrewHome extends StatelessWidget {
-  const CrewHome({Key? key, required this.navigator}) : super(key: key);
-
-  final GlobalKey<NavigatorState> navigator;
-
+  const CrewHome({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      key: navigator,
       initialRoute: '/crew_main',
       onGenerateRoute: (RouteSettings settings){
         WidgetBuilder builder;
 
         switch(settings.name){
           case '/crew_main': builder = (context) =>
-              CrewMainView(
+              CrewHomeView(
                 onChangePage: pushCrewListView,
                 onMyCrewView: pushMyCrewView,
                 onRecommendedCrewView: pushRecommededCrewView,
               ); break;
           case '/crew_list' : builder = (context) => CrewListView(); break;
-          case '/signup': builder = (context) => Container(); break;
           default :builder = (context) => Text('error'); break;
         }
         return MaterialPageRoute(builder: builder);
@@ -35,20 +30,20 @@ class CrewHome extends StatelessWidget {
 
   void pushCrewListView(){
     print('pushed');
-    navigator.currentState?.pushNamed('/crew_list');
+    //navigator.currentState?.pushNamed('/crew_list');
   }
 
   void pushMyCrewView(){
-    navigator.currentState?.push(MaterialPageRoute(builder: (context) => Container()));
+    //navigator.currentState?.push(MaterialPageRoute(builder: (context) => Container()));
   }
 
   void pushRecommededCrewView(){
-    navigator.currentState?.push(MaterialPageRoute(builder: (context) => Container()));
+    //navigator.currentState?.push(MaterialPageRoute(builder: (context) => Container()));
   }
 }
 
-class CrewMainView extends StatefulWidget {
-  const CrewMainView({
+class CrewHomeView extends StatefulWidget {
+  const CrewHomeView({
     Key? key,
     required this.onChangePage,
     required this.onMyCrewView,
@@ -60,10 +55,10 @@ class CrewMainView extends StatefulWidget {
   final VoidCallback onRecommendedCrewView;
 
   @override
-  State<CrewMainView> createState() => _CrewMainViewState();
+  State<CrewHomeView> createState() => _CrewHomeViewState();
 }
 
-class _CrewMainViewState extends State<CrewMainView> {
+class _CrewHomeViewState extends State<CrewHomeView> {
 
   late TextEditingController _searchTextController;
 
