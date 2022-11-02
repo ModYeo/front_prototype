@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:unnamed_project/http_model/httpModel.dart';
 import 'package:unnamed_project/login/login.dart';
-import 'package:unnamed_project/secure_storage/storageModel.dart';
+
+import '../secure_storage/storageModel.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _IntroPageState extends State<IntroPage> {
   Future<bool> _delayOpening() async {
     await Future.delayed(const Duration(seconds: 1), );
 
-    var data = await storageModel().readAll();
+    var data = await StorageModel().readAll();
     if(data.containsKey('id') && data.containsKey('pw')){
       var id = data['id'];
       var pw = data['pw'];

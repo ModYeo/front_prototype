@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unnamed_project/route_navigator/login_route_navigator.dart';
@@ -6,6 +8,7 @@ import 'package:unnamed_project/route_navigator/route_navigator.dart';
 import 'package:unnamed_project/view_model.dart';
 
 import '../http_model/httpModel.dart';
+import '../secure_storage/storageModel.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
@@ -26,6 +29,9 @@ class Login extends StatelessWidget {
 
 class LoginPageView extends StatelessWidget {
   LoginPageView({Key? key}) : super(key: key);
+
+  final idTextController = TextEditingController();
+  final pwTextController = TextEditingController();
 
   late LoginPageViewModel viewModel;
 
@@ -60,7 +66,7 @@ class LoginPageView extends StatelessWidget {
                       children: [
                         Text('Email'),
                         TextField(
-                          controller: viewModel.idTextController,
+                          controller: idTextController,
                           onSubmitted: (text){},
                           textInputAction: TextInputAction.next,
                         ),
@@ -72,30 +78,44 @@ class LoginPageView extends StatelessWidget {
                         Text('Password'),
                         TextField(
                           obscureText: true,
-                          controller: viewModel.pwTextController,
+                          controller: pwTextController,
                           onSubmitted: (text){},
                           textInputAction: TextInputAction.next,
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 30,
-                      width: 200,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Checkbox(value: viewModel.enableIDSave, onChanged: (value){ viewModel.toggleIDSave(); }),
-                          Text('Save ID')
-                        ],
-                      ),
-                    ),
+                    // SizedBox(
+                    //   height: 30,
+                    //   width: 200,
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.start,
+                    //     children: [
+                    //       Checkbox(value: viewModel.enableIDSave, onChanged: (value){ viewModel.toggleIDSave(); }),
+                    //       Text('Save ID')
+                    //     ],
+                    //   ),
+                    // ),
                     SizedBox(
                       width: 200,
                       child: ElevatedButton(
                         onPressed: () async {
-                          if(await viewModel.ManualLogin()){
-                            viewModel.navigateToHome();
-                          }
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) => FutureBuilder(
+                              future: Future.delayed(Duration(seconds: 2), () => true)//viewModel.ManualLogin("test@gmail.com", "test123")
+                                  .then((value){
+                                if(value == true)
+                                  RouteNavigator().root.pushReplacementNamed(RootRoute.Home.path);
+                                return value;
+                              }),
+                              builder: (context, snapshot){
+                                if(snapshot.hasData && snapshot.data == false){
+                                  return LoginPageViewDialog();
+                                }
+                              return Center(child: CircularProgressIndicator(),);
+                            })
+                          );
                         },
                         child: const Text('Login'),
                       ),
@@ -121,16 +141,12 @@ class LoginPageView extends StatelessWidget {
 }
 
 class LoginPageViewModel extends ViewModel{
-  late TextEditingController idTextController;
-  late TextEditingController pwTextController;
 
   bool enableIDSave = false;
 
   List<int>? testList;
 
   LoginPageViewModel(context) : super(context){
-    idTextController = TextEditingController();
-    pwTextController = TextEditingController();
     getList();
   }
 
@@ -142,9 +158,21 @@ class LoginPageViewModel extends ViewModel{
     notifyListeners();
   }
 
-  Future<bool> ManualLogin() async {
-    print('login tried');
-    return true;//await httpModel().testLogin();
+  Future<bool> ManualLogin(id, pw) async {
+    var response = await httpModel().login(id, pw);
+    if(response){
+      await StorageModel().save('id', id);
+      await StorageModel().save(id, base64Encode(utf8.encode('$id:$pw')));
+    }
+    return false;
+  }
+
+  Future<bool> AutoLogin() async {
+    var id, pw;
+    if(id = await StorageModel().read('id') != null && (pw = await StorageModel().read(id)) != null){
+      return await httpModel().login(id, pw);
+    }
+    return false;
   }
 
   Future<void> getList() async{

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class storageModel{
-  static final storageModel _instance = storageModel._internal();
+class StorageModel{
+  static final StorageModel _instance = StorageModel._internal();
   final _storage = const FlutterSecureStorage();
 
-  factory storageModel(){
+  factory StorageModel(){
     return _instance;
   }
 
-  storageModel._internal(){
+  StorageModel._internal(){
     //init
   }
 

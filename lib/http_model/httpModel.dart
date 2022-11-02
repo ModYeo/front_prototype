@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -128,22 +129,28 @@ class httpModel{
   }
 
   Future<bool> login(String id, String pw) async {
-    var response = await http.post(
-      Uri.parse('$address/api/auth/login'),
-      headers: getEncryptHeader(base64Encode(utf8.encode('$id:$pw'))),
-    );
-    if(response.statusCode == StatusCode.OK.code){
-      print(response.body);
+    try{
+      var response = await http.post(
+        Uri.parse('$address/api/auth/login'),
+        headers: getEncryptHeader(base64Encode(utf8.encode('$id:$pw'))),
+      ).timeout(Duration(seconds: 2));
 
-      var responseBody = jsonDecode(response.body);
-      accessToken = responseBody['data']['accessToken'];
-      refreshToken = responseBody['data']['refreshToken'];
+      if(response.statusCode == StatusCode.OK.code){
+        print(response.body);
 
-      return true;
-    }
-    else{
-      print(response.statusCode);
-      print(response.body);
+        var responseBody = jsonDecode(response.body);
+        accessToken = responseBody['data']['accessToken'];
+        refreshToken = responseBody['data']['refreshToken'];
+
+        return true;
+      }
+      else{
+        print(response.statusCode);
+        print(response.body);
+        return false;
+      }
+    } on TimeoutException catch (e){
+      print('timeout');
       return false;
     }
   }

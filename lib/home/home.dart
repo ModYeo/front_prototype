@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:unnamed_project/home/crew/crew_home.dart';
 import 'package:unnamed_project/home/home_view.dart';
 import 'package:unnamed_project/home/mypage/mypage.dart';
@@ -41,7 +42,7 @@ class _HomeState extends State<Home> {
             children: [
               getOffStageView(CrewHome(), 0),
               getOffStageView(Text('second'), 1),
-              getOffStageView(HomePageView(), 2),
+              getOffStageView(ChangeNotifierProvider(create: (context) => HomePageViewModel(context), child: HomePageView(),), 2),
               getOffStageView(Text('fourth'),3),
               getOffStageView(MyPageView(),4),
             ],
@@ -56,7 +57,7 @@ class _HomeState extends State<Home> {
               BottomNavigationBarItem(icon: Icon(Icons.people), label: 'people'),
               BottomNavigationBarItem(icon: Icon(Icons.person), label: 'mypage'),
             ],
-          )
+          ),
         ),
       ),
     );
